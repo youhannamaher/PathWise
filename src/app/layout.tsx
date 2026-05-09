@@ -9,6 +9,10 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "PathWise | Choose better. Learn smarter. Grow continuously.",
   description: "PathWise helps students discover suitable majors, compare real university programs, and build a clear roadmap from school to career.",
+  icons: {
+    icon: "/favicon.png",
+    apple: "/logo.png",
+  },
 };
 
 export default function RootLayout({

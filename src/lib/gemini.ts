@@ -6,7 +6,8 @@ const getGenAI = () => {
     console.warn("GEMINI_API_KEY is missing. AI features will fail.");
     return null;
   }
-  return new GoogleGenerativeAI(apiKey, { apiVersion: "v1" });
+  // Using v1beta as it is more compatible with the latest 1.5 models across all regions
+  return new GoogleGenerativeAI(apiKey);
 };
 
 export async function generateAIReport(assessment: any) {
@@ -43,7 +44,7 @@ export async function askCareerCoach(history: {role: string, content: string}[],
     const genAI = getGenAI();
     if (!genAI) return "I cannot connect to my AI brain right now. Please check the API configuration.";
 
-    // Use the most compatible model name
+    // Use standard model name
     const model = genAI.getGenerativeModel({ 
       model: "gemini-1.5-flash",
     });
@@ -53,8 +54,8 @@ export async function askCareerCoach(history: {role: string, content: string}[],
 Be helpful, clear, and practical. Your goal is to help the student choose between the universities and programs they have saved.
 
 CRITICAL: ONLY recommend programs from the student's saved list provided below. Do not make up universities.
-Student's Saved Programs: ${JSON.stringify(contextData.savedPrograms || [])}
-Student's Assessment: ${JSON.stringify(contextData.assessment || "No assessment yet")}
+Student's Saved Programs: ${JSON.stringify(contextData?.savedPrograms || [])}
+Student's Assessment: ${JSON.stringify(contextData?.assessment || "No assessment yet")}
 
 If asked for a recommendation, analyze their interests/skills from the assessment and compare them against the programs in their saved list. Pick the top 1-3 that match best and explain why.`;
 
@@ -66,35 +67,33 @@ If asked for a recommendation, analyze their interests/skills from the assessmen
         parts: [{ text: msg.content }],
       }));
 
-    // If history is empty or doesn't start with user, we'll prepend a dummy user/model if needed, 
-    // but better to just start fresh if it's invalid
+    // Ensure history starts with 'user'
+    while (sanitizedHistory.length > 0 && sanitizedHistory[0].role !== 'user') {
+      sanitizedHistory.shift();
+    }
+
+    // Ensure alternation
     const finalHistory = [];
-    if (sanitizedHistory.length > 0 && sanitizedHistory[0].role === 'user') {
-      // Basic alternation check
-      let lastRole = "";
-      for (const msg of sanitizedHistory) {
-        if (msg.role !== lastRole) {
-          finalHistory.push(msg);
-          lastRole = msg.role;
-        }
+    let lastRole = "";
+    for (const msg of sanitizedHistory) {
+      if (msg.role !== lastRole) {
+        finalHistory.push(msg);
+        lastRole = msg.role;
       }
     }
 
-    // Start chat with system prompt as the first message or in the instruction
-    // We'll use the simplest method: prepend it to the current message if history is empty
-    let finalMessage = message;
-    if (finalHistory.length === 0) {
-      finalMessage = `${systemPrompt}\n\nUser Question: ${message}`;
-    }
+    // Prepend system prompt to the user message for context reinforcement
+    const enhancedMessage = `${systemPrompt}\n\nUSER MESSAGE: ${message}`;
 
     const chat = model.startChat({
       history: finalHistory,
     });
 
-    const result = await chat.sendMessage(finalMessage);
+    const result = await chat.sendMessage(enhancedMessage);
     return result.response.text();
   } catch (error: any) {
     console.error("Gemini Chat Error:", error);
-    return `Error from Google AI: ${error.message || "Unknown error"}. Please check your API key and Vercel settings.`;
+    // Return a slightly more user-friendly error but include the technical detail for us
+    return `AI Connection Error: ${error.message || "Unknown error"}. (Note: Ensure your Google AI Studio key is active and check the Vercel logs if this persists).`;
   }
 }

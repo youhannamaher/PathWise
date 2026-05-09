@@ -22,6 +22,7 @@ export function Navbar() {
       <div className="container mx-auto flex h-16 items-center px-4">
         <div className="mr-4 flex">
           <Link href="/" className="mr-6 flex items-center space-x-2">
+            <img src="/logo.png" alt="PathWise Logo" className="w-8 h-8 rounded-lg shadow-sm" />
             <span className="font-bold text-xl tracking-tight text-primary">PathWise</span>
           </Link>
           <nav className="flex items-center space-x-6 text-sm font-medium overflow-x-auto">
