@@ -68,10 +68,17 @@ export const enableDemoMode = () => {
   localStorage.setItem("pathwise_demo_mode", "true");
 };
 
-export const disableDemoMode = () => {
+export const resetAllPathWiseData = () => {
   if (typeof window === "undefined") return;
-  localStorage.removeItem("pathwise_demo_mode");
   localStorage.removeItem(DEMO_ASSESSMENT_KEY);
   localStorage.removeItem(DEMO_SAVED_PROGRAMS_KEY);
   localStorage.removeItem(DEMO_DECISION_BOARD_KEY);
+  // Also clear any other related items
+  localStorage.removeItem("pathwise_assessment_results");
+};
+
+export const disableDemoMode = () => {
+  if (typeof window === "undefined") return;
+  localStorage.removeItem("pathwise_demo_mode");
+  resetAllPathWiseData();
 };

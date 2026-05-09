@@ -1,11 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { resetAllPathWiseData } from "@/lib/demo-storage";
 
 export function Navbar() {
   const pathname = usePathname();
+  const router = useRouter();
   
   const navLinks = [
     { name: "About Us", href: "/about" },
@@ -16,6 +18,15 @@ export function Navbar() {
     { name: "Decision Board", href: "/decision-board" },
     { name: "AI Coach", href: "/coach" },
   ];
+
+  const handleStartFree = (e: React.MouseEvent) => {
+    e.preventDefault();
+    resetAllPathWiseData();
+    router.push("/assessment");
+    // Force a reload to clear any context state if needed, 
+    // but usually router.push is enough for Next.js to re-fetch on new page
+    window.location.href = "/assessment";
+  };
 
   return (
     <nav className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -49,12 +60,12 @@ export function Navbar() {
           >
             Login
           </Link>
-          <Link 
-            href="/assessment" 
-            className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-4 py-2"
+          <button 
+            onClick={handleStartFree}
+            className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-4 py-2 cursor-pointer"
           >
             Start Free
-          </Link>
+          </button>
         </div>
       </div>
     </nav>

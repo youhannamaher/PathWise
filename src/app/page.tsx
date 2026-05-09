@@ -4,7 +4,18 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowRight, BrainCircuit, GraduationCap, Map, Compass, ShieldCheck } from "lucide-react";
 
+import { useRouter } from "next/navigation";
+import { resetAllPathWiseData } from "@/lib/demo-storage";
+
 export default function Home() {
+  const router = useRouter();
+
+  const handleStartFree = (e: React.MouseEvent) => {
+    e.preventDefault();
+    resetAllPathWiseData();
+    window.location.href = "/assessment";
+  };
+
   return (
     <div className="flex flex-col min-h-screen">
       {/* Hero Section */}
@@ -33,13 +44,13 @@ export default function Home() {
             transition={{ duration: 0.5, delay: 0.2 }}
             className="flex flex-col sm:flex-row items-center justify-center gap-4"
           >
-            <Link 
-              href="/assessment" 
-              className="w-full sm:w-auto inline-flex items-center justify-center bg-blue-600 text-white px-8 py-4 rounded-full font-semibold text-lg hover:bg-blue-700 transition-all shadow-lg hover:shadow-blue-600/25"
+            <button 
+              onClick={handleStartFree}
+              className="w-full sm:w-auto inline-flex items-center justify-center bg-blue-600 text-white px-8 py-4 rounded-full font-semibold text-lg hover:bg-blue-700 transition-all shadow-lg hover:shadow-blue-600/25 cursor-pointer"
             >
               Start My Career Assessment
               <ArrowRight className="ml-2 w-5 h-5" />
-            </Link>
+            </button>
             <Link 
               href="/programs" 
               className="w-full sm:w-auto inline-flex items-center justify-center bg-white text-slate-700 border border-slate-200 px-8 py-4 rounded-full font-semibold text-lg hover:bg-slate-50 transition-all"
@@ -155,13 +166,13 @@ export default function Home() {
         <div className="container mx-auto max-w-3xl">
           <h2 className="text-4xl font-bold text-white mb-6">Start building your future direction today.</h2>
           <p className="text-blue-100 text-xl mb-10">Takes only 10 minutes. Free for students.</p>
-          <Link 
-            href="/assessment" 
-            className="inline-flex items-center justify-center bg-white text-blue-600 px-8 py-4 rounded-full font-bold text-lg hover:bg-slate-50 transition-all shadow-xl"
+          <button 
+            onClick={handleStartFree}
+            className="inline-flex items-center justify-center bg-white text-blue-600 px-8 py-4 rounded-full font-bold text-lg hover:bg-slate-50 transition-all shadow-xl cursor-pointer"
           >
             Start Assessment Now
             <ArrowRight className="ml-2 w-5 h-5" />
-          </Link>
+          </button>
         </div>
       </section>
     </div>
