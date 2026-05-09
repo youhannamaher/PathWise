@@ -6,7 +6,7 @@ const getGenAI = () => {
     console.warn("GEMINI_API_KEY is missing. AI features will fail.");
     return null;
   }
-  return new GoogleGenerativeAI(apiKey);
+  return new GoogleGenerativeAI(apiKey, { apiVersion: "v1" });
 };
 
 export async function generateAIReport(assessment: any) {
@@ -14,7 +14,7 @@ export async function generateAIReport(assessment: any) {
     const genAI = getGenAI();
     if (!genAI) return "AI Report generation is disabled due to missing API key.";
 
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro-latest" });
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
     
     const prompt = `
 You are an expert career and academic advisor. A student has completed a career assessment with the following details:
@@ -45,7 +45,7 @@ export async function askCareerCoach(history: {role: string, content: string}[],
 
     // Use the most compatible model name
     const model = genAI.getGenerativeModel({ 
-      model: "gemini-1.5-flash-latest",
+      model: "gemini-1.5-flash",
     });
 
     // Instructions and context
