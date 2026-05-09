@@ -13,7 +13,7 @@ const getGenAI = () => {
     return null;
   }
   // Explicitly use the stable 'v1' API version to avoid the 404 errors common in 'v1beta'
-  return new GoogleGenerativeAI(apiKey, { apiVersion: "v1" });
+  return new GoogleGenerativeAI(apiKey);
 };
 
 export async function generateAIReport(assessment: any) {
