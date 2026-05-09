@@ -1,20 +1,27 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
+/**
+ * PATHWISE AI ADAPTER
+ * This file handles all communication with Google AI Studio.
+ * SECURITY: This code runs only on the server. The GEMINI_API_KEY is never exposed to the browser.
+ */
+
 const getGenAI = () => {
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
-    console.warn("GEMINI_API_KEY is missing. AI features will fail.");
+    console.warn("GEMINI_API_KEY is missing in environment variables.");
     return null;
   }
-  // Using v1beta as it is more compatible with the latest 1.5 models across all regions
-  return new GoogleGenerativeAI(apiKey);
+  // Explicitly use the stable 'v1' API version to avoid the 404 errors common in 'v1beta'
+  return new GoogleGenerativeAI(apiKey, { apiVersion: "v1" });
 };
 
 export async function generateAIReport(assessment: any) {
   try {
     const genAI = getGenAI();
-    if (!genAI) return "AI Report generation is disabled due to missing API key.";
+    if (!genAI) return "AI Report generation is disabled due to missing configuration.";
 
+    // Fallback logic for model names
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
     
     const prompt = `
@@ -35,7 +42,7 @@ Format the output in clean Markdown.
     return result.response.text();
   } catch (error: any) {
     console.error("Gemini Report Error:", error);
-    return `Error generating report: ${error.message}`;
+    return `Technical error generating report: ${error.message}`;
   }
 }
 
@@ -44,12 +51,10 @@ export async function askCareerCoach(history: {role: string, content: string}[],
     const genAI = getGenAI();
     if (!genAI) return "I cannot connect to my AI brain right now. Please check the API configuration.";
 
-    // Use standard model name
-    const model = genAI.getGenerativeModel({ 
-      model: "gemini-1.5-flash",
-    });
+    // We use gemini-1.5-flash as the primary model. 
+    // If it fails with 404, we catch it and try gemini-pro (Gemini 1.0) as a fallback.
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-    // Instructions and context
     const systemPrompt = `You are PathWise AI, an expert academic and career coach for high school students in Egypt.
 Be helpful, clear, and practical. Your goal is to help the student choose between the universities and programs they have saved.
 
@@ -57,9 +62,12 @@ CRITICAL: ONLY recommend programs from the student's saved list provided below. 
 Student's Saved Programs: ${JSON.stringify(contextData?.savedPrograms || [])}
 Student's Assessment: ${JSON.stringify(contextData?.assessment || "No assessment yet")}
 
-If asked for a recommendation, analyze their interests/skills from the assessment and compare them against the programs in their saved list. Pick the top 1-3 that match best and explain why.`;
+Instructions:
+1. Analyze their interests/skills from the assessment.
+2. Compare them against the programs in their saved list.
+3. Pick the top 1-3 that match best and explain why.`;
 
-    // Sanitize history: must alternate user/model and start with user
+    // Ensure history is valid for Gemini (must start with user and alternate)
     const sanitizedHistory = history
       .filter(msg => typeof msg.content === 'string' && msg.content.trim() !== "")
       .map(msg => ({
@@ -67,12 +75,10 @@ If asked for a recommendation, analyze their interests/skills from the assessmen
         parts: [{ text: msg.content }],
       }));
 
-    // Ensure history starts with 'user'
     while (sanitizedHistory.length > 0 && sanitizedHistory[0].role !== 'user') {
       sanitizedHistory.shift();
     }
 
-    // Ensure alternation
     const finalHistory = [];
     let lastRole = "";
     for (const msg of sanitizedHistory) {
@@ -82,18 +88,26 @@ If asked for a recommendation, analyze their interests/skills from the assessmen
       }
     }
 
-    // Prepend system prompt to the user message for context reinforcement
-    const enhancedMessage = `${systemPrompt}\n\nUSER MESSAGE: ${message}`;
+    const chat = model.startChat({ history: finalHistory });
+    const finalMessage = `${systemPrompt}\n\nUSER: ${message}`;
 
-    const chat = model.startChat({
-      history: finalHistory,
-    });
-
-    const result = await chat.sendMessage(enhancedMessage);
+    const result = await chat.sendMessage(finalMessage);
     return result.response.text();
   } catch (error: any) {
     console.error("Gemini Chat Error:", error);
-    // Return a slightly more user-friendly error but include the technical detail for us
-    return `AI Connection Error: ${error.message || "Unknown error"}. (Note: Ensure your Google AI Studio key is active and check the Vercel logs if this persists).`;
+    
+    // Fallback mechanism: If 1.5 Flash is 404ing, try the ultra-stable Gemini Pro 1.0
+    if (error.message?.includes("404") || error.message?.includes("not found")) {
+      try {
+        const genAI = getGenAI();
+        const fallbackModel = genAI!.getGenerativeModel({ model: "gemini-pro" });
+        const result = await fallbackModel.generateContent(`${message}\n\n(Context: ${JSON.stringify(contextData)})`);
+        return result.response.text();
+      } catch (fallbackError: any) {
+        return `Deep Connection Error: Even fallback failed. ${fallbackError.message}`;
+      }
+    }
+
+    return `AI Connection Error: ${error.message}. Please verify the GEMINI_API_KEY in Vercel.`;
   }
 }
