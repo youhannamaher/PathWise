@@ -44,17 +44,27 @@ export async function askCareerCoach(history: {role: string, content: string}[],
 
   const model = genAI.getGenerativeModel({ 
     model: "gemini-1.5-flash-latest",
-    systemInstruction: `You are PathWise AI, an expert academic and career coach for high school students in Egypt.
+    systemInstruction: {
+      role: "system",
+      parts: [{ text: `You are PathWise AI, an expert academic and career coach for high school students in Egypt.
 Be helpful, clear, and practical. Do not overpromise career outcomes. 
 If asked about tuition fees, do not hallucinate exact numbers unless provided in the context; instead refer to budget tiers (Low, Medium, High, Very High).
-Here is the student's context: ${JSON.stringify(contextData)}`
+Here is the student's context: ${JSON.stringify(contextData)}` }]
+    }
   });
   
+  // Sanitize history to ensure it starts with 'user' and alternates
+  let sanitizedHistory = history.map(msg => ({
+    role: msg.role === 'user' ? 'user' : 'model',
+    parts: [{ text: msg.content }],
+  }));
+
+  if (sanitizedHistory.length > 0 && sanitizedHistory[0].role !== 'user') {
+    sanitizedHistory.shift(); // Remove first element if it's not 'user'
+  }
+
   const chat = model.startChat({
-    history: history.map(msg => ({
-      role: msg.role === 'user' ? 'user' : 'model',
-      parts: [{ text: msg.content }],
-    }))
+    history: sanitizedHistory
   });
 
   try {
