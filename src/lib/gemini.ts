@@ -58,8 +58,8 @@ Here is the student's context: ${JSON.stringify(contextData)}`
   try {
     const result = await chat.sendMessage(message);
     return result.response.text();
-  } catch (error) {
+  } catch (error: any) {
     console.error("Gemini Chat Error:", error);
-    return "I am having trouble processing that right now. Please try again later.";
+    return `Error from Google AI: ${error.message || "Unknown error"}. Please check your API key and Vercel region.`;
   }
 }
