@@ -42,17 +42,19 @@ export async function askCareerCoach(history: {role: string, content: string}[],
   const genAI = getGenAI();
   if (!genAI) return "I cannot connect to my AI brain right now. Please check the API configuration.";
 
-  const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+  const model = genAI.getGenerativeModel({ 
+    model: "gemini-1.5-flash",
+    systemInstruction: `You are PathWise AI, an expert academic and career coach for high school students in Egypt.
+Be helpful, clear, and practical. Do not overpromise career outcomes. 
+If asked about tuition fees, do not hallucinate exact numbers unless provided in the context; instead refer to budget tiers (Low, Medium, High, Very High).
+Here is the student's context: ${JSON.stringify(contextData)}`
+  });
   
   const chat = model.startChat({
     history: history.map(msg => ({
       role: msg.role === 'user' ? 'user' : 'model',
       parts: [{ text: msg.content }],
-    })),
-    systemInstruction: `You are PathWise AI, an expert academic and career coach for high school students in Egypt.
-Be helpful, clear, and practical. Do not overpromise career outcomes. 
-If asked about tuition fees, do not hallucinate exact numbers unless provided in the context; instead refer to budget tiers (Low, Medium, High, Very High).
-Here is the student's context: ${JSON.stringify(contextData)}`
+    }))
   });
 
   try {
