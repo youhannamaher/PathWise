@@ -13,7 +13,7 @@ export async function generateAIReport(assessment: any) {
   const genAI = getGenAI();
   if (!genAI) return "AI Report generation is disabled due to missing API key.";
 
-  const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
+  const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro-latest" });
   
   const prompt = `
 You are an expert career and academic advisor. A student has completed a career assessment with the following details:
@@ -43,7 +43,7 @@ export async function askCareerCoach(history: {role: string, content: string}[],
   if (!genAI) return "I cannot connect to my AI brain right now. Please check the API configuration.";
 
   const model = genAI.getGenerativeModel({ 
-    model: "gemini-1.5-flash",
+    model: "gemini-1.5-flash-latest",
     systemInstruction: `You are PathWise AI, an expert academic and career coach for high school students in Egypt.
 Be helpful, clear, and practical. Do not overpromise career outcomes. 
 If asked about tuition fees, do not hallucinate exact numbers unless provided in the context; instead refer to budget tiers (Low, Medium, High, Very High).
