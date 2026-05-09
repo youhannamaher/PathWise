@@ -14,7 +14,7 @@ export async function generateAIReport(assessment: any) {
     const genAI = getGenAI();
     if (!genAI) return "AI Report generation is disabled due to missing API key.";
 
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro-latest" });
     
     const prompt = `
 You are an expert career and academic advisor. A student has completed a career assessment with the following details:
@@ -45,7 +45,7 @@ export async function askCareerCoach(history: {role: string, content: string}[],
 
     // Use the most compatible model name
     const model = genAI.getGenerativeModel({ 
-      model: "gemini-1.5-flash",
+      model: "gemini-1.5-flash-latest",
     });
 
     // Instructions and context
