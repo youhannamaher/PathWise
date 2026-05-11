@@ -107,7 +107,7 @@ export default function Home() {
                 className="w-full h-full"
                 playsInline
               >
-                <source src="/video-story.mov" type="video/quicktime" />
+                <source src="/video-story.mp4" type="video/mp4" />
                 Your browser does not support the video tag.
               </video>
             </motion.div>
