@@ -2,13 +2,16 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowRight, BrainCircuit, GraduationCap, Map, Compass, ShieldCheck } from "lucide-react";
+import { ArrowRight, BrainCircuit, GraduationCap, Map, Compass, ShieldCheck, PlayCircle, X } from "lucide-react";
 
 import { useRouter } from "next/navigation";
 import { resetAllPathWiseData } from "@/lib/demo-storage";
+import { useState } from "react";
+import { AnimatePresence } from "framer-motion";
 
 export default function Home() {
   const router = useRouter();
+  const [isVideoOpen, setIsVideoOpen] = useState(false);
 
   const handleStartFree = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -64,17 +67,50 @@ export default function Home() {
                   Start My Career Assessment
                   <ArrowRight className="ml-2 w-5 h-5" />
                 </button>
-                <Link 
-                  href="/programs" 
-                  className="w-full sm:w-auto inline-flex items-center justify-center bg-white text-slate-700 border border-slate-200 px-8 py-4 rounded-full font-semibold text-lg hover:bg-slate-50 transition-all"
+                <button 
+                  onClick={() => setIsVideoOpen(true)}
+                  className="w-full sm:w-auto inline-flex items-center justify-center bg-white text-slate-700 border border-slate-200 px-8 py-4 rounded-full font-semibold text-lg hover:bg-slate-50 transition-all gap-2"
                 >
-                  Explore Universities
-                </Link>
+                  <PlayCircle className="w-5 h-5 text-blue-600" />
+                  Watch our Story
+                </button>
               </motion.div>
             </div>
           </div>
         </div>
       </section>
+
+      {/* Video Modal */}
+      <AnimatePresence>
+        {isVideoOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-10 bg-slate-900/90 backdrop-blur-sm"
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="relative w-full max-w-5xl aspect-video bg-black rounded-3xl overflow-hidden shadow-2xl"
+            >
+              <button
+                onClick={() => setIsVideoOpen(false)}
+                className="absolute top-4 right-4 z-10 p-2 bg-white/10 hover:bg-white/20 text-white rounded-full transition-colors"
+              >
+                <X className="w-6 h-6" />
+              </button>
+              <video 
+                src="/video-output-B582A9D0-63D0-4977-827F-F56435FD9C9F-1.mov" 
+                controls 
+                autoPlay 
+                className="w-full h-full"
+              />
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Problem Section */}
       <section className="py-20 bg-slate-50 px-6">
