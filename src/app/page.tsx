@@ -102,11 +102,14 @@ export default function Home() {
                 <X className="w-6 h-6" />
               </button>
               <video 
-                src="/video-output-B582A9D0-63D0-4977-827F-F56435FD9C9F-1.mov" 
                 controls 
                 autoPlay 
                 className="w-full h-full"
-              />
+                playsInline
+              >
+                <source src="/video-story.mov" type="video/quicktime" />
+                Your browser does not support the video tag.
+              </video>
             </motion.div>
           </motion.div>
         )}
