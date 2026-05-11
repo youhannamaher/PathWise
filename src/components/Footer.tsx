@@ -5,6 +5,17 @@ export function Footer() {
         <p className="text-center text-sm leading-loose text-muted-foreground md:text-left">
           Built for the future. <span className="font-semibold text-primary">PathWise</span> © {new Date().getFullYear()}
         </p>
+        <p className="text-center text-sm text-muted-foreground md:text-right">
+          Built by{" "}
+          <a 
+            href="https://youhannamaher.github.io/" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="font-medium underline underline-offset-4 hover:text-primary transition-colors"
+          >
+            Youhanna Maher
+          </a>
+        </p>
       </div>
     </footer>
   );
