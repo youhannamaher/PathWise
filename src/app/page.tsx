@@ -22,6 +22,16 @@ export default function Home() {
       <section className="relative px-6 py-24 md:py-32 lg:py-40 overflow-hidden bg-white">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-blue-50 via-white to-white" />
         <div className="container relative mx-auto text-center max-w-4xl">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5 }}
+            className="flex justify-center mb-8"
+          >
+            <div className="p-3 bg-white rounded-2xl shadow-xl shadow-blue-500/10 border border-slate-100">
+              <img src="/logo.png" alt="PathWise Logo" className="w-16 h-16 md:w-20 md:h-20" />
+            </div>
+          </motion.div>
           <motion.h1 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
