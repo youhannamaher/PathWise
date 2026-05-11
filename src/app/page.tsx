@@ -21,53 +21,58 @@ export default function Home() {
       {/* Hero Section */}
       <section className="relative px-6 py-24 md:py-32 lg:py-40 overflow-hidden bg-white">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-blue-50 via-white to-white" />
-        <div className="container relative mx-auto text-center max-w-4xl">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5 }}
-            className="flex justify-center mb-8"
-          >
-            <div className="p-3 bg-white rounded-2xl shadow-xl shadow-blue-500/10 border border-slate-100">
-              <img src="/logo.png" alt="PathWise Logo" className="w-16 h-16 md:w-20 md:h-20" />
+        <div className="container relative mx-auto max-w-6xl">
+          <div className="flex flex-col lg:flex-row items-center justify-center gap-10 md:gap-16">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5 }}
+              className="flex-shrink-0"
+            >
+              <div className="p-6 bg-white rounded-[2rem] shadow-2xl shadow-blue-500/20 border border-slate-100 flex items-center justify-center">
+                <img src="/logo.png" alt="PathWise Logo" className="w-32 h-32 md:w-48 md:h-48 lg:w-64 lg:h-64 object-contain" />
+              </div>
+            </motion.div>
+
+            <div className="text-center lg:text-left max-w-2xl">
+              <motion.h1 
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5 }}
+                className="text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight text-slate-900 mb-6 leading-[1.1]"
+              >
+                Find the university path that <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-violet-600">actually fits you.</span>
+              </motion.h1>
+              <motion.p 
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5, delay: 0.1 }}
+                className="text-xl md:text-2xl text-slate-600 mb-10 leading-relaxed"
+              >
+                PathWise helps students discover suitable majors, compare real university programs, and build a clear roadmap from school to career.
+              </motion.p>
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.2 }}
+                className="flex flex-col sm:flex-row items-center lg:justify-start justify-center gap-4"
+              >
+                <button 
+                  onClick={handleStartFree}
+                  className="w-full sm:w-auto inline-flex items-center justify-center bg-blue-600 text-white px-8 py-4 rounded-full font-semibold text-lg hover:bg-blue-700 transition-all shadow-lg hover:shadow-blue-600/25 cursor-pointer"
+                >
+                  Start My Career Assessment
+                  <ArrowRight className="ml-2 w-5 h-5" />
+                </button>
+                <Link 
+                  href="/programs" 
+                  className="w-full sm:w-auto inline-flex items-center justify-center bg-white text-slate-700 border border-slate-200 px-8 py-4 rounded-full font-semibold text-lg hover:bg-slate-50 transition-all"
+                >
+                  Explore Universities
+                </Link>
+              </motion.div>
             </div>
-          </motion.div>
-          <motion.h1 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight text-slate-900 mb-6"
-          >
-            Find the university path that <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-violet-600">actually fits you.</span>
-          </motion.h1>
-          <motion.p 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            className="text-xl md:text-2xl text-slate-600 mb-10 max-w-2xl mx-auto leading-relaxed"
-          >
-            PathWise helps students discover suitable majors, compare real university programs, and build a clear roadmap from school to career.
-          </motion.p>
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="flex flex-col sm:flex-row items-center justify-center gap-4"
-          >
-            <button 
-              onClick={handleStartFree}
-              className="w-full sm:w-auto inline-flex items-center justify-center bg-blue-600 text-white px-8 py-4 rounded-full font-semibold text-lg hover:bg-blue-700 transition-all shadow-lg hover:shadow-blue-600/25 cursor-pointer"
-            >
-              Start My Career Assessment
-              <ArrowRight className="ml-2 w-5 h-5" />
-            </button>
-            <Link 
-              href="/programs" 
-              className="w-full sm:w-auto inline-flex items-center justify-center bg-white text-slate-700 border border-slate-200 px-8 py-4 rounded-full font-semibold text-lg hover:bg-slate-50 transition-all"
-            >
-              Explore Universities
-            </Link>
-          </motion.div>
+          </div>
         </div>
       </section>
 
